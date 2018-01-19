@@ -3,17 +3,17 @@
 
 void IOHelper::PrintGames(const std::vector<std::string>& gamesList)
 {
-	for (std::string s : gamesList)
+	for (int i = 0; i < gamesList.size(); i++)
 	{
-		std::cout << s << std::endl;
+		std::cout << i + 1 << ": " << gamesList[i];
 	}
 }
 
 void IOHelper::PrintPlayers(const std::vector<Player>& playerList)
 {
-	for (Player p : playerList)
+	for (int i = 0; i < playerList.size(); i++)
 	{
-		std::cout << p;
+		std::cout << i + 1 << ": " << playerList[i];
 	}
 }
 

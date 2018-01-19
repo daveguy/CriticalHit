@@ -63,43 +63,6 @@ int GetNumPlayers() {
 	return numPlayers;
 }
 
-//int CalculateNumGroups()
-//{
-//	int numPlayers = GetNumPlayers();
-//	return numPlayers % 4 == 0 ? numPlayers /4 : numPlayers /4 +1;
-//}
-
-//void CreateGroups()
-//{
-//	int numGroups = CalculateNumGroups();
-//	int numGroupsOf4 = numGroups - (4 - GetNumPlayers() % 4);
-//	groupList.clear();
-//	for (int i = 0; i < numGroups; i++)
-//	{
-//		if(i < numGroupsOf4)
-//		{
-//			groupList.push_back(Group(4));
-//		}
-//		else {
-//			groupList.push_back(Group(3));
-//		}
-//	}
-//}
-
-//void AssignPlayers()
-//{
-//	std::random_shuffle(playerList.begin(), playerList.end());
-//	int group = 0;
-//	for (Player player : playerList) {
-//		if (player.eliminated || player.inGroup) { continue; }
-//		if (groupList[group].IsFull())
-//		{
-//			group++;
-//		}
-//		groupList[group].AddPlayer(player);
-//	}
-//}
-
 void AddPlayerToGroup()
 {
 	int group;
@@ -108,6 +71,7 @@ void AddPlayerToGroup()
 	std::cout << "Add player to which group?" << std::endl;
 	std::cin >> group;
 	std::cout << "Add which player?" << std::endl;
+	IOHelper::PrintPlayers(playerList);
 	std::cin >> playerIndex;
 	groupManager.AddPlayerToGroup(group - 1, playerList[playerIndex - 1]);
 	playerList[playerIndex - 1].inGroup = true;
