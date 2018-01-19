@@ -12,7 +12,7 @@ public:
 
 	std::string GetMachine();
 	void SetMachine(std::string machine);
-	void AddPlayer(Player player);
+	void AddPlayer(const Player& player);
 	bool IsFull();
 
 	friend void SwapPlayers(int playerFromThisGroup, int playerFromOther, Group otherGroup);

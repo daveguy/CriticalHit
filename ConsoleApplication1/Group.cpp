@@ -22,7 +22,7 @@ void Group::SetMachine(std::string machine)
 	machineName = machine;
 }
 
-void Group::AddPlayer(Player player)
+void Group::AddPlayer(const Player& player)
 {
 	players.push_back(player);
 }

@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "Group.h"
+#include "GroupManager.h"
+#include "IOHelper.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -12,23 +14,7 @@
 
 std::vector<std::string> gamesList;
 std::vector<Player> playerList;
-std::vector<Group> groupList;
-
-void PrintGames()
-{
-	for (std::string s : gamesList)
-	{
-		std::cout << s << std::endl;
-	}
-}
-
-void PrintPlayers()
-{
-	for (Player p : playerList)
-	{
-		std::cout << p;
-	}
-}
+GroupManager groupManager;
 
 void EnterGames()
 {
@@ -39,7 +25,7 @@ void EnterGames()
 		std::cout << std::flush;
 		system("CLS");
 		std::cout << "Current games:" << std::endl;
-		PrintGames();
+		IOHelper::PrintGames(gamesList);
 		std::cout << "Enter the next game or 'q' to finish" << std::endl;
 		std::cin >> game;
 		if (game == "q") { return; }
@@ -56,7 +42,7 @@ void EnterPlayers()
 		std::cout << std::flush;
 		system("CLS");
 		std::cout << "Current players:" << std::endl;
-		PrintPlayers();
+		IOHelper::PrintPlayers(playerList);
 		std::cout << "Enter the next player or 'q' to finish" << std::endl;
 		std::cin >> player;
 		if (player == "q") { return; }
@@ -64,6 +50,7 @@ void EnterPlayers()
 	}
 }
 
+//returns the number of players that are non-eliminated and not already in a group
 int GetNumPlayers() {
 	int numPlayers = 0;
 	for (Player p : playerList)
@@ -76,94 +63,56 @@ int GetNumPlayers() {
 	return numPlayers;
 }
 
-int GetNumGroups()
+//int CalculateNumGroups()
+//{
+//	int numPlayers = GetNumPlayers();
+//	return numPlayers % 4 == 0 ? numPlayers /4 : numPlayers /4 +1;
+//}
+
+//void CreateGroups()
+//{
+//	int numGroups = CalculateNumGroups();
+//	int numGroupsOf4 = numGroups - (4 - GetNumPlayers() % 4);
+//	groupList.clear();
+//	for (int i = 0; i < numGroups; i++)
+//	{
+//		if(i < numGroupsOf4)
+//		{
+//			groupList.push_back(Group(4));
+//		}
+//		else {
+//			groupList.push_back(Group(3));
+//		}
+//	}
+//}
+
+//void AssignPlayers()
+//{
+//	std::random_shuffle(playerList.begin(), playerList.end());
+//	int group = 0;
+//	for (Player player : playerList) {
+//		if (player.eliminated || player.inGroup) { continue; }
+//		if (groupList[group].IsFull())
+//		{
+//			group++;
+//		}
+//		groupList[group].AddPlayer(player);
+//	}
+//}
+
+void AddPlayerToGroup()
 {
-	int numPlayers = GetNumPlayers();
-	return numPlayers % 4 == 0 ? numPlayers /4 : numPlayers /4 +1;
+	int group;
+	int playerIndex;
+	std::cout << "There are " << groupManager.getNumGroups() << " Groups" << std::endl;
+	std::cout << "Add player to which group?" << std::endl;
+	std::cin >> group;
+	std::cout << "Add which player?" << std::endl;
+	std::cin >> playerIndex;
+	groupManager.AddPlayerToGroup(group - 1, playerList[playerIndex - 1]);
+	playerList[playerIndex - 1].inGroup = true;
 }
 
-void CreateGroups()
-{
-	int numGroups = GetNumGroups();
-	int numGroupsOf4 = numGroups - (4 - GetNumPlayers() % 4);
-	groupList.clear();
-	for (int i = 0; i < numGroups; i++)
-	{
-		if(i < numGroupsOf4)
-		{
-			groupList.push_back(Group(4));
-		}
-		else {
-			groupList.push_back(Group(3));
-		}
-	}
-}
-
-void AssignGames()
-{
-	int numGroups = GetNumGroups();
-	groupList.clear();
-	std::random_shuffle(gamesList.begin(), gamesList.end());
-	for (int i = 0; i < numGroups; i++)
-	{
-		if (i == gamesList.size())
-		{
-			std::random_shuffle(gamesList.begin(), gamesList.end());
-		}
-		groupList.push_back(Group(gamesList[i%gamesList.size()]));
-	}
-}
-
-void PrintGame()
-{
-	for (int i = 0; i < groupList.size(); i++)
-	{
-		std::cout << i + 1 << ": " << groupList[i] << std::endl;
-	}
-}
-
-void AssignPlayersOld()
-{
-	std::random_shuffle(playerList.begin(), playerList.end());
-	int numPlayers = GetNumPlayers();
-	int numGroups = GetNumGroups();
-	int numGroupsOf4 = numGroups - (4 - numPlayers % 4);
-	for (int i(0),j(0); i < numGroups; i++)
-	{
-		if (playerList[j].eliminated || playerList[j].inGroup)
-		{
-			continue;
-		}
-		if (i < numGroupsOf4)
-		{
-			for (int k = 0; k < 4; k++,j++)
-			{
-				groupList[i].AddPlayer(playerList[j]);
-			}
-		}
-		else
-		{
-			for (int k = 0; k < 3; k++, j++)
-			{
-				groupList[i].AddPlayer(playerList[j]);
-			}
-		}
-	}
-}
-
-void AssignPlayers()
-{
-	std::random_shuffle(playerList.begin(), playerList.end());
-	int group = 0;
-	for (Player player : playerList) {
-		if (player.eliminated || player.inGroup) { continue; }
-		if (groupList[group].IsFull())
-		{
-			group++;
-		}
-		groupList[group].AddPlayer(player);
-	}
-}
 
 void PauseForCardPlay(std::string header)
 {
@@ -177,11 +126,11 @@ void PauseForCardPlay(std::string header)
 		std::cout << "Press 'a' to add a player to a group" << std::endl;
 		std::cout << "Press c to change a players group" << std::endl;
 		std::cout << "Press 'q' to finish" << std::endl;
-		PrintGame();
+		IOHelper::PrintGame(groupManager);
 		std::cin >> choice;
 		if (choice == "a")
 		{
-
+			AddPlayerToGroup();
 		}
 		else if (choice == "c")
 		{
@@ -196,7 +145,7 @@ void PauseForCardPlay(std::string header)
 
 void PlayGame()
 {
-	CreateGroups();
+	groupManager.CreateGroups(GetNumPlayers());
 	//Pause for 'Before group selection' cards
 	PauseForCardPlay("Play 'Before Group selection' cards now");
 	//TODO assign players to group based on card
@@ -204,10 +153,10 @@ void PlayGame()
 	//PrintGame();
 
 	//Assign remaining players to groups
-	AssignPlayers();
+	groupManager.AssignGroups(playerList);
 	std::cout << std::flush;
 	system("CLS");
-	PrintGame();
+	IOHelper::PrintGame(groupManager);
 	//pause for 'before round begins' cards
 	//TODO add shuffling of players &/or games
 
@@ -222,6 +171,7 @@ int main()
 	std::srand(unsigned(std::time(0)));//set srand for shuffling
 	gamesList.reserve(100);
 	playerList.reserve(100);
+	groupManager = GroupManager();
 	EnterGames();
 	EnterPlayers();
 	PlayGame();
