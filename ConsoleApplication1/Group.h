@@ -14,6 +14,8 @@ public:
 	void SetMachine(std::string machine);
 	void AddPlayer(const Player& player);
 	bool IsFull();
+	bool Contains(const Player &player);
+	void RemovePlayer(const Player &player);
 
 	friend void SwapPlayers(int playerFromThisGroup, int playerFromOther, Group otherGroup);
 	friend std::ostream& operator<<(std::ostream &out, const Group &group);
@@ -21,4 +23,5 @@ public:
 private:
 	std::string machineName;
 	std::vector<Player> players;
+	int GetPlayerIndex(const Player &player);
 };

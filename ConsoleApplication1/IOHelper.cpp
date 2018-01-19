@@ -5,7 +5,7 @@ void IOHelper::PrintGames(const std::vector<std::string>& gamesList)
 {
 	for (int i = 0; i < gamesList.size(); i++)
 	{
-		std::cout << i + 1 << ": " << gamesList[i];
+		std::cout << i + 1 << ": " << gamesList[i]<<std::endl;
 	}
 }
 
@@ -13,7 +13,7 @@ void IOHelper::PrintPlayers(const std::vector<Player>& playerList)
 {
 	for (int i = 0; i < playerList.size(); i++)
 	{
-		std::cout << i + 1 << ": " << playerList[i];
+		std::cout << i + 1 << ": " << playerList[i] << std::endl;
 	}
 }
 

@@ -33,6 +33,18 @@ void GroupManager::AddPlayerToGroup(int group, const Player & player)
 	groupList[group].AddPlayer(player);
 }
 
+void GroupManager::RemovePlayer(const Player & player)
+{
+	for (Group& g : groupList)
+	{
+		bool contains = g.Contains(player);
+		if (contains)
+		{
+			g.RemovePlayer(player);
+		}
+	}
+}
+
 //Randomly assigns remaining players
 void GroupManager::AssignGroups(const std::vector<Player>& playerList)
 {

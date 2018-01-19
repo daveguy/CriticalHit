@@ -22,6 +22,13 @@ void Player::SetName(std::string inName)
 
 std::ostream & operator<<(std::ostream & out, const Player & player)
 {
-	out << player.name << std::endl;
+	out << player.name;
 	return out;
 }
+
+bool operator==(const Player & player1, const Player & player2)
+{
+	return player1.name == player2.name;
+}
+
+

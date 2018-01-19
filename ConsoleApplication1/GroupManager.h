@@ -9,6 +9,7 @@ public:
 	GroupManager();
 	void CreateGroups(int numPlayers);
 	void AddPlayerToGroup(int group, const Player& player);
+	void RemovePlayer(const Player& player);
 	void AssignGroups(const std::vector<Player> &playerList);
 	int getNumGroups();
 	const Group& GetGroup(int index);

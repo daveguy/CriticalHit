@@ -77,6 +77,21 @@ void AddPlayerToGroup()
 	playerList[playerIndex - 1].inGroup = true;
 }
 
+void AddPlayerToGroup(int group, int playerIndex)
+{
+	groupManager.AddPlayerToGroup(group - 1, playerList[playerIndex - 1]);
+	playerList[playerIndex - 1].inGroup = true;
+}
+
+int RemovePlayerFromGroup()
+{
+	int playerIndex;
+	std::cout << "remove which player?" << std::endl;
+	IOHelper::PrintPlayers(playerList);
+	std::cin >> playerIndex;
+	groupManager.RemovePlayer(playerList[playerIndex - 1]);
+	return playerIndex;
+}
 
 void PauseForCardPlay(std::string header)
 {
@@ -98,7 +113,11 @@ void PauseForCardPlay(std::string header)
 		}
 		else if (choice == "c")
 		{
-
+			int playerIndex = RemovePlayerFromGroup();
+			int group;
+			std::cout << "Add player to which group?" << std::endl;
+			std::cin >> group;
+			AddPlayerToGroup(group, playerIndex);
 		}
 		else if (choice == "q")
 		{
@@ -139,7 +158,6 @@ int main()
 	EnterGames();
 	EnterPlayers();
 	PlayGame();
-
 
     return 0;
 }
