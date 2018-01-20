@@ -11,6 +11,6 @@ class IOHelper
 {
 public:
 	static void PrintGames(const std::vector<std::string> &gamesList);
-	static void PrintPlayers(const std::vector<Player> &playerList);
+	static void PrintPlayers(const std::vector<Player> &playerList, bool aliveOnly);
 	static void PrintGame(GroupManager &groupManager);
 };

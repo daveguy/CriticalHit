@@ -13,7 +13,7 @@ void GroupManager::CreateGroups(int numPlayers)
 {
 	this->numPlayers = numPlayers;
 	int numGroups = CalculateNumGroups();
-	int numGroupsOf4 = numGroups - (4 - numPlayers % 4);
+	int numGroupsOf4 = numGroups - (numGroups >=4 ? 4 - numPlayers % 4 : numPlayers % 4);
 	groupList.clear();
 	for (int i = 0; i < numGroups; i++)
 	{

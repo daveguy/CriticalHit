@@ -23,7 +23,7 @@ void Player::SetName(std::string inName)
 void Player::AddStrike()
 {
 	strikes++;
-	if (strikes == 3) { eliminated = true; }
+	if (strikes == 2) { eliminated = true; }
 }
 
 std::ostream & operator<<(std::ostream & out, const Player & player)

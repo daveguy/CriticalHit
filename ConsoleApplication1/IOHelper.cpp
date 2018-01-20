@@ -9,11 +9,19 @@ void IOHelper::PrintGames(const std::vector<std::string>& gamesList)
 	}
 }
 
-void IOHelper::PrintPlayers(const std::vector<Player>& playerList)
+
+void IOHelper::PrintPlayers(const std::vector<Player>& playerList, bool aliveOnly)
 {
 	for (int i = 0; i < playerList.size(); i++)
 	{
-		std::cout << i + 1 << ": " << playerList[i] << std::endl;
+		if (aliveOnly)
+		{
+			playerList[i].eliminated ? std::cout : std::cout << i + 1 << ": " << playerList[i] << std::endl;
+		}
+		else
+		{
+			std::cout << i + 1 << ": " << playerList[i] << std::endl;
+		}
 	}
 }
 
