@@ -12,6 +12,7 @@ public:
 
 	std::string GetName();
 	void SetName(std::string inName);
+	void AddStrike();
 	friend std::ostream& operator<<(std::ostream &out, const Player &player);
 	friend bool operator==(const Player &player1, const Player &player2);
 

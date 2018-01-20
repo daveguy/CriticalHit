@@ -150,6 +150,27 @@ void PauseForCardPlay(std::string header)
 	}
 }
 
+void PauseForResults()
+{
+	bool finished = false;
+	while (!finished)
+	{
+		int playerIndex;
+		std::cout << "Who got dem strikes?" << std::endl;
+		std::cout << "Enter '-1' to finish" << std::endl;
+		IOHelper::PrintPlayers(playerList);
+		std::cin >> playerIndex;
+		if (playerIndex == -1)
+		{
+			return;
+		}
+		else
+		{
+			playerList[playerIndex - 1].AddStrike();
+		}
+	}
+}
+
 void PlayGame()
 {
 	groupManager.CreateGroups(GetNumPlayers());
@@ -163,9 +184,9 @@ void PlayGame()
 	IOHelper::PrintGame(groupManager);
 	//pause for 'before round begins' cards
 	PauseForCardPlay("Play 'Before round begins' cards now");
-	//TODO add shuffling of players &/or games
 
 	//results
+	PauseForResults();
 	//repeat until finished
 
 	

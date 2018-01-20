@@ -20,9 +20,19 @@ void Player::SetName(std::string inName)
 	name = inName;
 }
 
+void Player::AddStrike()
+{
+	strikes++;
+	if (strikes == 3) { eliminated = true; }
+}
+
 std::ostream & operator<<(std::ostream & out, const Player & player)
 {
-	out << player.name;
+	out << player.name << " ";
+	for (int i = 0; i < player.strikes; i++)
+	{
+		out << "X";
+	}
 	return out;
 }
 
