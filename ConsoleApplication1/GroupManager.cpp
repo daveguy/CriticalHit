@@ -33,16 +33,20 @@ void GroupManager::AddPlayerToGroup(int group, const Player & player)
 	groupList[group].AddPlayer(player);
 }
 
-void GroupManager::RemovePlayer(const Player & player)
+//Returns the index of the containing group
+int GroupManager::RemovePlayer(const Player & player)
 {
-	for (Group& g : groupList)
+	int i = 0;
+	for (; i < groupList.size(); i++)
 	{
-		bool contains = g.Contains(player);
+		bool contains = groupList[i].Contains(player);
 		if (contains)
 		{
-			g.RemovePlayer(player);
+			groupList[i].RemovePlayer(player);
+			return i;
 		}
 	}
+	return -1;
 }
 
 //Randomly assigns remaining players

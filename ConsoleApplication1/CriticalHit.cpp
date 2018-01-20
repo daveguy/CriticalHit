@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <ctime>
 #include <stdlib.h>
+#include <array>
 
 std::vector<std::string> gamesList;
 std::vector<Player> playerList;
@@ -67,7 +68,6 @@ void AddPlayerToGroup()
 {
 	int group;
 	int playerIndex;
-	std::cout << "There are " << groupManager.getNumGroups() << " Groups" << std::endl;
 	std::cout << "Add player to which group?" << std::endl;
 	std::cin >> group;
 	std::cout << "Add which player?" << std::endl;
@@ -93,6 +93,29 @@ int RemovePlayerFromGroup()
 	return playerIndex;
 }
 
+void ChangePlayersGroup()
+{
+	int playerIndex = RemovePlayerFromGroup();
+	int group;
+	std::cout << "Add player to which group?" << std::endl;
+	std::cin >> group;
+	AddPlayerToGroup(group, playerIndex);
+}
+
+void SwapPlayers()
+{
+	int playerIndex1;
+	int playerIndex2;
+	std::cout << "Swap which players?" << std::endl;
+	IOHelper::PrintPlayers(playerList);
+	std::cin >> playerIndex1;
+	std::cin >> playerIndex2;
+	int group1 = groupManager.RemovePlayer(playerList[playerIndex1 - 1]);
+	int group2 = groupManager.RemovePlayer(playerList[playerIndex2 - 1]);
+	AddPlayerToGroup(group2 + 1, playerIndex1);
+	AddPlayerToGroup(group1 + 1, playerIndex2);
+}
+
 void PauseForCardPlay(std::string header)
 {
 	bool finished = false;
@@ -103,7 +126,8 @@ void PauseForCardPlay(std::string header)
 		system("CLS");
 		std::cout << header << std::endl;
 		std::cout << "Press 'a' to add a player to a group" << std::endl;
-		std::cout << "Press c to change a players group" << std::endl;
+		std::cout << "Press 'c' to change a players group" << std::endl;
+		std::cout << "Press 's' to swap two players" << std::endl;
 		std::cout << "Press 'q' to finish" << std::endl;
 		IOHelper::PrintGame(groupManager);
 		std::cin >> choice;
@@ -113,11 +137,11 @@ void PauseForCardPlay(std::string header)
 		}
 		else if (choice == "c")
 		{
-			int playerIndex = RemovePlayerFromGroup();
-			int group;
-			std::cout << "Add player to which group?" << std::endl;
-			std::cin >> group;
-			AddPlayerToGroup(group, playerIndex);
+			ChangePlayersGroup();
+		}
+		else if(choice == "s")
+		{
+			SwapPlayers();
 		}
 		else if (choice == "q")
 		{
@@ -131,9 +155,6 @@ void PlayGame()
 	groupManager.CreateGroups(GetNumPlayers());
 	//Pause for 'Before group selection' cards
 	PauseForCardPlay("Play 'Before Group selection' cards now");
-	//TODO assign players to group based on card
-	//AssignGames();
-	//PrintGame();
 
 	//Assign remaining players to groups
 	groupManager.AssignGroups(playerList);
@@ -141,6 +162,7 @@ void PlayGame()
 	system("CLS");
 	IOHelper::PrintGame(groupManager);
 	//pause for 'before round begins' cards
+	PauseForCardPlay("Play 'Before round begins' cards now");
 	//TODO add shuffling of players &/or games
 
 	//results
