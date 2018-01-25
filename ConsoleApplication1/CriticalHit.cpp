@@ -13,11 +13,7 @@
 #include <stdlib.h>
 #include <array>
 
-std::vector<std::string> gamesList;
-std::vector<Player> playerList;
-GroupManager groupManager;
-
-void EnterGames()
+void EnterGames(IOHelper &ioHelper, std::vector<std::string> &gamesList)
 {
 	bool finished = false;
 	std::string game;
@@ -26,7 +22,7 @@ void EnterGames()
 		std::cout << std::flush;
 		system("CLS");
 		std::cout << "Current games:" << std::endl;
-		IOHelper::PrintGames(gamesList);
+		ioHelper.PrintGames(gamesList);
 		std::cout << "Enter the next game or 'q' to finish" << std::endl;
 		std::cin >> game;
 		if (game == "q") { return; }
@@ -34,7 +30,7 @@ void EnterGames()
 	}
 }
 
-void EnterPlayers()
+void EnterPlayers(IOHelper &ioHelper, std::vector<Player> &playerList)
 {
 	bool finished = false;
 	std::string player;
@@ -43,7 +39,7 @@ void EnterPlayers()
 		std::cout << std::flush;
 		system("CLS");
 		std::cout << "Current players:" << std::endl;
-		IOHelper::PrintPlayers(playerList, true);
+		ioHelper.PrintPlayers(playerList, true);
 		std::cout << "Enter the next player or 'q' to finish" << std::endl;
 		std::cin >> player;
 		if (player == "q") { return; }
@@ -51,7 +47,7 @@ void EnterPlayers()
 	}
 }
 
-void ResetInGroup()
+void ResetInGroup(std::vector<Player> &playerList)
 {
 	for (Player& p : playerList)
 	{
@@ -60,9 +56,9 @@ void ResetInGroup()
 }
 
 //returns the number of players that are non-eliminated and not already in a group
-int GetNumPlayers() {
+int GetNumPlayers(const std::vector<Player> &playerList) {
 	int numPlayers = 0;
-	for (Player& p : playerList)
+	for (const Player& p : playerList)
 	{
 		if (!p.eliminated && !p.inGroup)
 		{
@@ -72,59 +68,60 @@ int GetNumPlayers() {
 	return numPlayers;
 }
 
-void AddPlayerToGroup()
+void AddPlayerToGroup(IOHelper &ioHelper, std::vector<Player> &playerList, GroupManager &groupManager)
 {
 	int group;
 	int playerIndex;
 	std::cout << "Add player to which group?" << std::endl;
 	std::cin >> group;
 	std::cout << "Add which player?" << std::endl;
-	IOHelper::PrintPlayers(playerList, true);
+	ioHelper.PrintPlayers(playerList, true);
 	std::cin >> playerIndex;
 	groupManager.AddPlayerToGroup(group - 1, playerList[playerIndex - 1]);
 	playerList[playerIndex - 1].inGroup = true;
 }
 
-void AddPlayerToGroup(int group, int playerIndex)
+//TODO should just take a group and player
+void AddPlayerToGroup(int group, int playerIndex, GroupManager &groupManager, std::vector<Player> &playerList)
 {
 	groupManager.AddPlayerToGroup(group - 1, playerList[playerIndex - 1]);
 	playerList[playerIndex - 1].inGroup = true;
 }
 
-int RemovePlayerFromGroup()
+int RemovePlayerFromGroup(IOHelper &ioHelper, GroupManager &groupManager, std::vector<Player> &playerList)
 {
 	int playerIndex;
 	std::cout << "remove which player?" << std::endl;
-	IOHelper::PrintPlayers(playerList, true);
+	ioHelper.PrintPlayers(playerList, true);
 	std::cin >> playerIndex;
 	groupManager.RemovePlayer(playerList[playerIndex - 1]);
 	return playerIndex;
 }
 
-void ChangePlayersGroup()
+void ChangePlayersGroup(IOHelper &ioHelper, GroupManager &groupManager, std::vector<Player> &playerList)
 {
-	int playerIndex = RemovePlayerFromGroup();
+	int playerIndex = RemovePlayerFromGroup(ioHelper, groupManager, playerList);
 	int group;
 	std::cout << "Add player to which group?" << std::endl;
 	std::cin >> group;
-	AddPlayerToGroup(group, playerIndex);
+	AddPlayerToGroup(group, playerIndex, groupManager, playerList);
 }
 
-void SwapPlayers()
+void SwapPlayers(IOHelper &ioHelper, GroupManager &groupManager, std::vector<Player> &playerList)
 {
 	int playerIndex1;
 	int playerIndex2;
 	std::cout << "Swap which players?" << std::endl;
-	IOHelper::PrintPlayers(playerList, true);
+	ioHelper.PrintPlayers(playerList, true);
 	std::cin >> playerIndex1;
 	std::cin >> playerIndex2;
 	int group1 = groupManager.RemovePlayer(playerList[playerIndex1 - 1]);
 	int group2 = groupManager.RemovePlayer(playerList[playerIndex2 - 1]);
-	AddPlayerToGroup(group2 + 1, playerIndex1);
-	AddPlayerToGroup(group1 + 1, playerIndex2);
+	AddPlayerToGroup(group2 + 1, playerIndex1, groupManager, playerList);
+	AddPlayerToGroup(group1 + 1, playerIndex2, groupManager, playerList);
 }
 
-void PauseForCardPlay(std::string header)
+void PauseForCardPlay(IOHelper &ioHelper, std::string &header, GroupManager &groupManager, std::vector<Player> &playerList)
 {
 	bool finished = false;
 	std::string choice;
@@ -137,19 +134,19 @@ void PauseForCardPlay(std::string header)
 		std::cout << "Press 'c' to change a players group" << std::endl;
 		std::cout << "Press 's' to swap two players" << std::endl;
 		std::cout << "Press 'q' to finish" << std::endl;
-		IOHelper::PrintGame(groupManager);
+		ioHelper.PrintGame(groupManager);
 		std::cin >> choice;
 		if (choice == "a")
 		{
-			AddPlayerToGroup();
+			AddPlayerToGroup(ioHelper, playerList, groupManager);
 		}
 		else if (choice == "c")
 		{
-			ChangePlayersGroup();
+			ChangePlayersGroup(ioHelper, groupManager, playerList);
 		}
 		else if(choice == "s")
 		{
-			SwapPlayers();
+			SwapPlayers(ioHelper, groupManager, playerList);
 		}
 		else if (choice == "q")
 		{
@@ -158,7 +155,7 @@ void PauseForCardPlay(std::string header)
 	}
 }
 
-void PauseForResults()
+void PauseForResults(IOHelper &ioHelper, std::vector<Player> &playerList)
 {
 	bool finished = false;
 	while (!finished)
@@ -168,7 +165,7 @@ void PauseForResults()
 		system("CLS");
 		std::cout << "Who got dem strikes?" << std::endl;
 		std::cout << "Enter '-1' to finish" << std::endl;
-		IOHelper::PrintPlayers(playerList, true);
+		ioHelper.PrintPlayers(playerList, true);
 		std::cin >> playerIndex;
 		if (playerIndex == -1)
 		{
@@ -181,63 +178,68 @@ void PauseForResults()
 	}
 }
 
-bool Finished()
+bool Finished(const std::vector<Player> &playerList)
 {
 	int numLeft = 0;
-	for (Player& p : playerList)
+	for (const Player& p : playerList)
 	{
 		if (!p.eliminated) { numLeft++; }
 	}
 	return numLeft == 1;
 }
 
-Player& GetWinner()
+const Player& GetWinner(const std::vector<Player> &playerList)
 {
-	for (Player& p : playerList)
+	for (const Player& p : playerList)
 	{
 		if (!p.eliminated) { return p; }
 	}
 	return Player("Error");
 }
 
-void PlayGame()
+void PlayGame(IOHelper ioHelper, std::vector<Player> playerList, GroupManager groupManager)
 {
 	bool finished = false;
 	while (!finished)
 	{
-		ResetInGroup();
-		groupManager.CreateGroups(GetNumPlayers());
+		ResetInGroup(playerList);
+		groupManager.CreateGroups(GetNumPlayers(playerList));
 		//Pause for 'Before group selection' cards
-		PauseForCardPlay("Play 'Before Group selection' cards now");
+		PauseForCardPlay(ioHelper, std::string("Play 'Before Group selection' cards now"), groupManager, playerList);
 
 		//Assign remaining players to groups
 		groupManager.AssignGroups(playerList);
 		std::cout << std::flush;
 		system("CLS");
-		IOHelper::PrintGame(groupManager);
+		ioHelper.PrintGame(groupManager);
 		//pause for 'before round begins' cards
-		PauseForCardPlay("Play 'Before round begins' cards now");
+		PauseForCardPlay(ioHelper, std::string("Play 'Before round begins' cards now"), groupManager, playerList);
 
 		//results
-		PauseForResults();
+		PauseForResults(ioHelper, playerList);
 		//repeat until finished
-		if (Finished())
+		if (Finished(playerList))
 		{
 			finished = true;
 		}
 	}
-	std::cout << "The winner is: " << GetWinner() << std::endl;
+	std::cout << "The winner is: " << GetWinner(playerList) << std::endl;
 }
 
 int main()
 {
+	std::vector<std::string> gamesList;
+	std::vector<Player> playerList;
+	GroupManager groupManager;
+	IOHelper ioHelper;
+
 	std::srand(unsigned(std::time(0)));//set srand for shuffling
 	gamesList.reserve(100);
 	playerList.reserve(100);
 	groupManager = GroupManager();
-	EnterGames();
-	EnterPlayers();
-	PlayGame();
+	EnterGames(ioHelper, gamesList);
+	EnterPlayers(ioHelper,playerList);
+	PlayGame(ioHelper, playerList, groupManager);
 
     return 0;
 }

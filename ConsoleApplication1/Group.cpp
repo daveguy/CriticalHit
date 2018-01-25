@@ -12,7 +12,7 @@ Group::Group(std::string machine)
 	players.reserve(4);
 }
 
-std::string Group::GetMachine()
+std::string Group::GetMachine() const
 {
 	return machineName;
 }
@@ -27,27 +27,27 @@ void Group::AddPlayer(const Player &player)
 	players.push_back(player);
 }
 
-bool Group::IsFull()
+bool Group::IsFull() const
 {
 	return players.size()==players.capacity();
 }
 
-bool Group::Contains(const Player &player)
+bool Group::Contains(const Player &player) const
 {
-	bool contains = false;
-	for (Player p : players)
+
+	for (const Player& p : players)
 	{
-		if (p == player) { contains = true; }
+		if (p == player) { return true; }
 	}
-	return contains;
+	return false;
 }
 
-void Group::RemovePlayer(const Player & player)
+void Group::RemovePlayer(const Player& player)
 {
 	players.erase(players.begin() + GetPlayerIndex(player));
 }
 
-int Group::GetPlayerIndex(const Player & player)
+int Group::GetPlayerIndex(const Player& player) const
 {
 	for (int i = 0; i < players.size(); i++)
 	{
@@ -56,7 +56,7 @@ int Group::GetPlayerIndex(const Player & player)
 	return -1;
 }
 
-std::ostream & operator<<(std::ostream & out, const Group & group)
+std::ostream & operator<<(std::ostream& out, const Group& group)
 {
 	out << group.machineName << "\t";
 	for (int i = 0; i < group.players.size(); i++)

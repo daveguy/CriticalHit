@@ -1,0 +1,9 @@
+Need test cases
+
+Set games according to players choice
+
+Change group order post dice rolls
+
+swap players should be done by groupManager
+
+BUG can add player to more than one group

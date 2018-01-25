@@ -10,11 +10,11 @@ public:
 	Group(int size);
 	Group(std::string machine);
 
-	std::string GetMachine();
+	std::string GetMachine() const;
 	void SetMachine(std::string machine);
 	void AddPlayer(const Player& player);
-	bool IsFull();
-	bool Contains(const Player &player);
+	bool IsFull() const;
+	bool Contains(const Player &player) const;
 	void RemovePlayer(const Player &player);
 
 	friend void SwapPlayers(int playerFromThisGroup, int playerFromOther, Group otherGroup);
@@ -23,5 +23,5 @@ public:
 private:
 	std::string machineName;
 	std::vector<Player> players;
-	int GetPlayerIndex(const Player &player);
+	int GetPlayerIndex(const Player &player) const;
 };

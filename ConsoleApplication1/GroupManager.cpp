@@ -13,7 +13,8 @@ void GroupManager::CreateGroups(int numPlayers)
 {
 	this->numPlayers = numPlayers;
 	int numGroups = CalculateNumGroups();
-	int numGroupsOf4 = numGroups - (numGroups >=4 ? 4 - numPlayers % 4 : numPlayers % 4);
+	int numGroupsOf4 = numPlayers % 4 == 0 ? numPlayers / 4 : (numPlayers / 4 + 1) - (4 - numPlayers % 4);
+	//int numGroupsOf4 = numGroups - (numGroups >=4 ? 4 - numPlayers % 4 : numPlayers % 4);
 	groupList.clear();
 	for (int i = 0; i < numGroups; i++)
 	{
@@ -65,17 +66,17 @@ void GroupManager::AssignGroups(const std::vector<Player>& playerList)
 	}
 }
 
-int GroupManager::getNumGroups()
+int GroupManager::getNumGroups() const
 {
 	return groupList.size();
 }
 
-const Group& GroupManager::GetGroup(int index)
+const Group& GroupManager::GetGroup(int index) const
 {
 	return groupList[index];
 }
 
-int GroupManager::CalculateNumGroups()
+int GroupManager::CalculateNumGroups() const
 {
 	return numPlayers % 4 == 0 ? numPlayers / 4 : numPlayers / 4 + 1;
 }

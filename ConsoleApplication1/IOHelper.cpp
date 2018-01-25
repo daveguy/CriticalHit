@@ -25,7 +25,7 @@ void IOHelper::PrintPlayers(const std::vector<Player>& playerList, bool aliveOnl
 	}
 }
 
-void IOHelper::PrintGame(GroupManager &groupManager)
+void IOHelper::PrintGame(const GroupManager &groupManager)
 {
 	for (int i = 0; i < groupManager.getNumGroups(); i++)
 	{

@@ -10,7 +10,7 @@
 class IOHelper
 {
 public:
-	static void PrintGames(const std::vector<std::string> &gamesList);
-	static void PrintPlayers(const std::vector<Player> &playerList, bool aliveOnly);
-	static void PrintGame(GroupManager &groupManager);
+	void PrintGames(const std::vector<std::string> &gamesList);
+	void PrintPlayers(const std::vector<Player> &playerList, bool aliveOnly);
+	void PrintGame(const GroupManager &groupManager);
 };
